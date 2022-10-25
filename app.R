@@ -268,7 +268,11 @@ server <- function(input, output) {
                             '">',
                             "&nbsp;",
                             away_team_abbr$team_nick,
+                            "&nbsp;",
+                            off_df_raw$away_score[1], 
                             " &nbsp;@&nbsp; ",
+                            off_df_raw$home_score[1], 
+                            "&nbsp;",
                             home_team_abbr$team_nick, 
                             '&nbsp;',
                             '<img height="70"src="',
@@ -543,7 +547,11 @@ server <- function(input, output) {
                             '">',
                             "&nbsp;",
                             away_team_abbr$team_nick,
+                            "&nbsp;",
+                            def_df_raw$away_score[1], 
                             " &nbsp;@&nbsp; ",
+                            def_df_raw$home_score[1], 
+                            "&nbsp;",
                             home_team_abbr$team_nick, 
                             '&nbsp;',
                             '<img height="70"src="',
@@ -664,15 +672,26 @@ server <- function(input, output) {
   })
   
   output$download1 <- downloadHandler(
-    filename = function() {off_filename},
+    filename = function() {
+      if (input$week_var > 0) {
+        paste0("Week ", input$week_var, " ", input$team_var, " Offense.png")
+      } else {
+        paste0(input$year_var, " Season ", input$team_var, " Offense.png")
+      }
+    },
     content = function(file) {gtsave(offense_table(), file = file)},
     contentType = "image/png"
   )
   
   output$download2 <- downloadHandler(
     filename = function() {
-      paste0("Week ", input$week_var, " ", input$team_var, " Defense.png")
-    },    content = function(file) {gtsave(defense_table(), file = file)},
+      if (input$week_var > 0) {
+        paste0("Week ", input$week_var, " ", input$team_var, " Defense.png")
+      } else {
+        paste0(input$year_var, " Season ", input$team_var, " Defense.png")
+      }
+    },
+    content = function(file) {gtsave(defense_table(), file = file)},
     contentType = "image/png"
   )
 }
@@ -682,3 +701,4 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
